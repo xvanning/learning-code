@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+	<context:annotation-config/>
+	<context:component-scan base-package="cn.mldn"/>	
+
+<!--		
+	<bean id="adminDAOImpl" class="cn.mldn.dao.impl.AdminDAOImpl"/>
+	<bean id="roleDAOImpl" class="cn.mldn.dao.impl.RoleDAOImpl"/>
+	<bean id="adminServiceimpl" class="cn.mldn.service.impl.AdminServiceImpl">
+		<property name="adminDAO" ref="adminDAOImpl"/>
+		<property name="roleDAO" ref="roleDAOImpl"/>
+	</bean>
+
+	<bean id="apple" class="cn.mldn.demo.Apple" />
+	<bean id="company" class="cn.mldn.vo.Company">
+		<property name="msg">
+			<props>
+				<prop key="mldn">www.mldn.cn</prop>
+				<prop key="mldnjava">www.mldnjava.cn</prop>
+			</props>
+		</property> 
+	</bean>
+
+	<bean id="dept" class="cn.mldn.vo.Dept">
+		<property name="deptno" value="10"/>
+		<property name="dname" value="开发部"/>
+		<property name="emps">
+			<list>
+				<ref bean="empA"/>
+				<ref bean="empB"/>
+				<ref bean="empC"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="empA" class="cn.mldn.vo.Emp">
+		<property name="empno" value="1234"/>
+		<property name="ename" value="张三"/>
+		<property name="dept" ref="dept"/>
+	</bean>
+	<bean id="empB" class="cn.mldn.vo.Emp">
+		<property name="empno" value="2345"/>
+		<property name="ename" value="李四"/>
+		<property name="dept" ref="dept"/>
+	</bean>
+	<bean id="empC" class="cn.mldn.vo.Emp">
+		<property name="empno" value="3456"/>
+		<property name="ename" value="王五"/>
+		<property name="dept" ref="dept"/>
+	</bean>
+-->
+</beans>

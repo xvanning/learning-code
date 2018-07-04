@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+	<!-- Spring MVC也是基于Annotation实现的配置 -->
+	<context:annotation-config/>
+	<context:component-scan base-package="cn.mldn"/>
+		<!-- 在本程序之中设置要导入的资源文件路径，直接通过classpath加载 -->
+	<context:property-placeholder location="classpath:database.properties"/>
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${db.driver}"/> <!--驱动程序  -->
+		<property name="jdbcUrl" value="${db.url}"/>	<!--链接地址  -->
+		<property name="user" value="${db.user}"/>	<!--用户名  -->
+		<property name="password" value="${db.password}"/>	<!--密码  -->
+		<property name="maxPoolSize" value="${pool.max}"/>	<!--最大可用连接数  -->
+		<property name="minPoolSize" value="${pool.min}"/>	<!--最小维持连接数  -->
+		<property name="initialPoolSize" value="${pool.init}"/>	<!--初始化连接数  -->
+		<property name="maxIdleTime" value="${pool.idle}"/>	<!--最大等待连接数  -->
+	</bean>
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<!-- 要定义Spring MVC的处理 -->
+	<mvc:annotation-driven/>
+	<mvc:default-servlet-handler/>
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" >
+		<property name="prefix" value="/WEB-INF/pages/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+	<!-- 注入投票器的Bean -->
+	<bean id="accessDes" class="org.springframework.security.access.vote.AffirmativeBased">
+		<property name="decisionVoters">
+			<list>
+				<bean class="org.springframework.security.access.vote.RoleVoter"/>
+				<bean class="org.springframework.security.access.vote.AuthenticatedVoter"/>
+				<bean class="cn.mldn.vote.IPAddressVote"/>
+			</list>
+		</property>
+	</bean>
+	<!-- 启动安全验证 -->
+	<security:global-method-security 
+		jsr250-annotations="enabled" secured-annotations="enabled" access-decision-manager-ref="accessDes"/>
+	<!-- 使用默认的安全配置操作，如果出现了授权访问错误，则跳转到403.jsp页面 -->
+	<security:http access-denied-page="/403.jsp">
+		<security:remember-me 
+			token-validity-seconds="3600" data-source-ref="dataSource"/> 
+		<security:form-login
+			login-page="/login.jsp" login-processing-url="/login"/>
+		<security:logout
+			logout-success-url="/login.jsp" delete-cookies="JSESSIONID"/>
+		<!-- 配置session的管理操作，如果session失效跳转到login.jsp -->
+		<security:session-management invalid-session-url="/login.jsp?ses=invalid" >
+			<security:concurrency-control max-sessions="1" error-if-maximum-exceeded="true" expired-url="/login.jsp?ses=destroy"/>
+		</security:session-management>
+	</security:http>
+	<!-- 配置授权管理器，以后即便是使用了数据的验证，此处也要配置授权管理器 -->
+	<security:authentication-manager alias="authenticationManager">
+		<!-- 定义用户的基本权限信息，本处使用的是固定信息 -->
+		<security:authentication-provider 
+		user-service-ref="userDetailsImpl">
+				<security:password-encoder ref="md5"/>
+		</security:authentication-provider>
+	</security:authentication-manager>
+	<!-- 配置登陆成功后的页面，跳转到列表页面 -->
+	<bean id="loginSuccess" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+		<property name="defaultTargetUrl" value="/pages/back/message/message_list.action"></property>
+	</bean>
+	<!-- 配置登陆失败后的页面，跳转到登陆页面 -->
+	<bean id="loginFail" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+		<property name="defaultFailureUrl" value="/login.jsp?error=true"></property>
+	</bean>
+	<!-- 定义一个负责操作所有操作的链连接Bean-->
+	<bean id="validateLoginFilter" class="cn.mldn.filter.ValidateLoginFilter">
+		<property name="authenticationSuccessHandler" ref="loginSuccess"/>
+		<property name="authenticationFailureHandler" ref="loginFail"/>
+		<property name="authenticationManager" ref="authenticationManager"/>
+	</bean>
+</beans>
