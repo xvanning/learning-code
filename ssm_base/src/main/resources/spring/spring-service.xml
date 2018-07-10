@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--spring-service.xml的作用： 进行业务层的配置，对应于spring
+    1、扫描service包所有注解 @Service
+    2、配置事务管理器，把事务管理交由spring来完成
+    3、配置基于注解的声明式事务，可以直接在方法上@Transaction-->
+
+    <!-- 定义自动注解扫描的操作 -->
+    <context:annotation-config />
+
+    <!-- 1、扫描service包下所有使用注解的类型 -->
+    <context:component-scan base-package="com.service" />
+
+    <!-- 2、 配置事务管理器 -->
+    <!-- 定义数据库的事务控制，本事务控制直接针对于数据库连接操作进行 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!-- 注入数据库连接池 -->
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+<!--    &lt;!&ndash; 定义数据库的声明式事务控制，直接与业务方法对应 &ndash;&gt;
+    &lt;!&ndash; 定义事务的处理切入点 &ndash;&gt;
+    <aop:config expose-proxy="true">
+        <aop:pointcut expression="execution(* com..service..*.*(..))" id="pointcut"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut"/>
+    </aop:config>-->
+    <!-- 进入到了事务的配置声明 -->
+
+    <!-- 3、配置基于注解的声明式事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <!--<tx:advice id="txAdvice" transaction-manager="transactionManager">
+        &lt;!&ndash; 定义一切与服务层有关的控制方法名称，只要是使用了特定的名称那么就会自动处理事务 &ndash;&gt;
+        <tx:attributes>
+            <tx:method name="insert*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="REQUIRED"/>
+            <tx:method name="add*" propagation="REQUIRED"/>
+            <tx:method name="edit*" propagation="REQUIRED"/>
+            <tx:method name="change*" propagation="REQUIRED"/>
+            <tx:method name="remove*" propagation="REQUIRED"/>
+            <tx:method name="login*" propagation="REQUIRED"/>
+            <tx:method name="rm*" propagation="REQUIRED"/>
+            <tx:method name="get*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="check*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="load*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="list*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="*" propagation="REQUIRED" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>-->
+
+</beans>

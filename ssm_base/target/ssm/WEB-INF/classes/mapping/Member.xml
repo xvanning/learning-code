@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.dao.IMemberDAO">
+	<insert id="doCreate" parameterType="Member">
+		INSERT INTO member(mid,name,age,salary,birthday,note)
+		VALUES (#{mid},#{name},#{age},#{salary},#{birthday},#{note}) ;
+	</insert>
+	<select id="findAllSplit" parameterType="java.util.Map" resultType="Member">
+		SELECT mid,name,age,salary,birthday,note FROM member
+		<where>
+			<if test="column !=null and keyWord != null">
+				${column} LIKE #{keyWord}
+			</if>
+		</where>
+		LIMIT #{start},#{lineSize}
+	</select>
+</mapper>  

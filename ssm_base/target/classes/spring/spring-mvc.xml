@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <!--spring-MVC.xml的作用：进行控制层的配置，又称为Web层和Controller层，对应于springmvc
+    1、开启SpringMVC注解模式，可以使用@RequestMapping，@PathVariable，@ResponseBody等
+    2、对静态资源处理，如js，css，jpg等
+    3、配置jsp 显示ViewResolver，例如在controller中某个方法返回一个string类型的”login”，实际上会返回”/WEB-INF/login.jsp”
+    4、扫描web层 @Controller
+    5、定义文件的上传配置支持
+    6、配置了一个全局的异常的跳转映射
+    7、配置拦截 -->
+
+    <!-- 定义自动注解扫描的操作 -->
+    <context:annotation-config />
+
+    <!-- 1、扫描SpringMVC相关的bean -->
+    <context:component-scan base-package="com.controller" />
+
+    <!-- 配置SpringMVC -->
+    <!-- 2、开启SpringMVC注解模式 -->
+    <!-- 简化配置：
+        (1)自动注册DefaultAnootationHandlerMapping,AnotationMethodHandlerAdapter
+        (2)提供一些列：数据绑定，数字和日期的format @NumberFormat, @DateTimeFormat, xml,json默认读写支持
+    -->
+    <mvc:annotation-driven /><!-- 启动Spring MVC的注解配置 -->
+
+    <!-- 3、静态资源默认servlet配置
+        (1)加入对静态资源的处理：js,gif,png
+        (2)允许使用"/"做整体映射
+     -->
+    <mvc:default-servlet-handler/><!-- 启用处理请求的servlet -->
+
+    <!-- 4、配置jsp 显示ViewResolver -->
+    <!-- 表示要进行安全访问的路径资源匹配处理 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+        <property name="prefix" value="/WEB-INF/jsp/" /><!-- 匹配前缀 -->
+        <property name="suffix" value=".jsp" /><!-- 匹配后缀 -->
+    </bean>
+
+    <!-- 5、定义文件的上传配置支持 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 默认编码 -->
+        <property name="defaultEncoding" value="utf-8" />
+        <!-- 设置每次上传文件的最大值 -->
+        <property name="maxUploadSize" value="5242880"/>
+        <!-- 设置每次上传占用的内存最大值 -->
+        <property name="maxInMemorySize" value="40960"/>
+    </bean>
+
+    <!-- 6、配置了一个全局的异常的跳转映射，只要出现了指定的错误信息，那么就跳转到指定的页面 -->
+    <!--<bean id="exceptionMapping" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.web.multipart.MaxUploadSizeExceededException">
+                    errors
+                </prop>
+            </props>
+        </property>
+    </bean>
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basenames">
+            <array>
+                <value>Messages</value>
+                <value>Pages</value>
+                <value>Validations</value>
+            </array>
+        </property>
+    </bean>-->
+
+    <!-- 7、 配置拦截器 -->
+    <!--<mvc:interceptors>
+        <mvc:interceptor>
+            &lt;!&ndash; <mvc:mapping path="/**"/>拦截所有 &ndash;&gt;
+            <mvc:mapping path="/user/**"/>
+            <mvc:mapping path="/role/**"/>
+            <mvc:mapping path="/function/**"/>
+            <mvc:mapping path="/news/**"/>
+            <mvc:mapping path="/img/**"/>
+            <bean class="com.crossoverJie.intercept.Intercept"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>-->
+
+</beans>

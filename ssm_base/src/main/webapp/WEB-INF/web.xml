@@ -1,0 +1,60 @@
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         id="WebApp_ID" metadata-complete="true" version="3.1">
+
+  <display-name>ssm</display-name>
+
+  <!-- 此处描述的是强制指定读取的资源文件的位置，为下面的初始化参数做配置。不然会出现FileNotFoundException的错误。 -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:spring/spring-*.xml</param-value>
+  </context-param>
+
+  <!-- 在WEB容器里面进行Spring容器的加载 -->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <!-- 配置DispatcherServlet，此为Spring MVC配置所需要的程序文件，所有的请求都提交给Spring的Servlet程序 -->
+  <!-- 此为Spring MVC自己提供的servlet程序，一定要写上，因为其可以处理用户请求 -->
+  <servlet>
+    <servlet-name>spring-mvc-dispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <!-- 配置springMVC需要加载的配置文件
+        spring-dao.xml,spring-service.xml,spring-mvc.xml
+        Mybatis - > spring -> springmvc -->
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:spring/spring-*.xml</param-value>
+    </init-param>
+  </servlet>
+  <!-- SpringMVC中所有路径的请求映射，可以使用的是“/”或者是“*.action”等进行映射 -->
+  <servlet-mapping>
+    <servlet-name>spring-mvc-dispatcher</servlet-name>
+    <!-- 默认匹配所有的请求 -->
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+  <!-- Spring中提供的编码过滤器，使用的编码都是UTF-8 -->
+  <filter>
+    <filter-name>encoding</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <!-- 对所有路径下的文件进行UTF-8编码 -->
+  <filter-mapping>
+    <filter-name>encoding</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <!-- 定义欢迎页 -->
+  <!--<welcome-file-list>
+    <welcome-file>login.jsp</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>-->
+
+
+</web-app>

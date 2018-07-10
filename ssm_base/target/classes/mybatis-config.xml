@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration   
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+		<!--mybatis-config.xml的作用：进行持久层（数据）框架的配置
+		1、使用自增主键
+		2、使用列别名
+		3、开启驼峰命名转换 create_time -> createTime-->
+
+
+<configuration>
+	<!-- 进行Mybatis的相应环境的全局属性定义 -->
+	<settings>
+		<!-- 在本项目之中开启二级缓存 -->
+		<setting name="cacheEnabled" value="true"/>
+		<!-- 1、使用jdbc的getGeneratedKeys获取数据库自增主键值 -->
+		<setting name="useGeneratedKeys" value="true" />
+		<!-- 2、使用列别名替换列名 默认:true -->
+		<setting name="useColumnLabel" value="true" />
+		<!-- 3、开启驼峰命名转换:Table{create_time} -> Entity{createTime} -->
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+	</settings>
+</configuration>

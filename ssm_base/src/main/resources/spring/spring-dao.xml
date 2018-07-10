@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+
+<!--   spring-dao.xml的作用：进行持久（数据）层的配置,对应于mybatis
+    1、读入数据库连接相关参数
+    2、配置数据连接池：
+        2.1、配置连接属性，可以不读配置项文件直接在这里写死
+        2.2、配置c3p0或者是druid数据库连接池，只配了几个常用的
+    3、配置SqlSessionFactory对象（mybatis）
+    4、扫描dao层接口，动态实现dao接口，也就是说不需要daoImpl，sql和参数都写在xml文件上-->
+
+    <!-- 配置整合mybatis过程 -->
+
+    <!-- 1.配置数据库相关参数properties的属性：${url} -->
+    <!-- 导入所有与数据库连接有关的信息项 -->
+    <context:property-placeholder location="classpath:jdbc.properties" />
+    <!-- 2.进行数据库连接池的配置 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!-- 配置连接池属性 -->
+        <property name="driverClass" value="${jdbc.driver}" /><!-- 驱动程序 -->
+        <property name="jdbcUrl" value="${jdbc.url}" /><!-- 连接地址 -->
+        <property name="user" value="${jdbc.user}" /><!-- 用户名 -->
+        <property name="password" value="${jdbc.password}" /><!-- 密码 -->
+        <!-- c3p0连接池的私有属性 -->
+        <property name="maxPoolSize" value="${jdbc.maxPoolSize}" />	<!-- 最大的可用连接数 -->
+        <property name="minPoolSize" value="${jdbc.minPoolSize}" />	<!-- 最小维持的连接数 -->
+        <property name="initialPoolSize" value="${jdbc.initialPoolSize}" /><!-- 初始化连接数 -->
+        <property name="maxIdleTime" value="${jdbc.maxIdleTime}" />	<!-- 最大等待连接 -->
+        <property name="autoCommitOnClose" value="${jdbc.autoCommitOnClose}" /><!-- 关闭连接后不自动commit -->
+        <property name="checkoutTimeout" value="${jdbc.checkoutTimeout}" /><!-- 获取连接超时时间 -->
+        <property name="acquireRetryAttempts" value="${jdbc.acquireRetryAttempts}" /><!-- 当获取连接失败重试次数 -->
+    </bean>
+
+    <!-- 3.配置SqlSessionFactory对象 -->
+    <!-- 定义Spring与MyBatis整合的操作控制，此时数据库的连接对象取得由Spring负责 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 配置所有资源文件的保存路径的资源匹配符 -->
+        <!-- 注入数据库连接池 -->
+        <property name="dataSource" ref="dataSource" />
+        <!-- 配置MyBaties全局配置文件:mybatis-config.xml -->
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+        <!-- 扫描pojo包 使用别名 -->
+        <property name="typeAliasesPackage" value="com.pojo" />
+        <!-- 扫描sql配置文件:mapping需要的xml文件 -->
+        <property name="mapperLocations" value="classpath:mapping/*.xml" />
+    </bean>
+
+    <!-- 4.配置扫描Dao接口包，动态实现Dao接口，注入到spring容器中 -->
+    <!-- 配置自动创建数据层实现类的开发包,定义该包中的访问为自动配置实现，就可以进行去数据层开发，不需要编写daoImpl实现类 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 注入sqlSessionFactory -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+        <!-- 给出需要扫描Dao接口包 -->
+        <property name="basePackage" value="com.dao" />
+    </bean>
+
+</beans>
