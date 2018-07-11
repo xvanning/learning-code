@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
-<mapper namespace="com.dao.IMemberDAO">
+<mapper namespace="com.dao.IMemberDAO"> <!-- namespace等于IMemberDAO接口地址 -->
 	<insert id="doCreate" parameterType="Member">
+		<!-- IMemberDAO接口中方法名和映射文件的statement的id一致 -->
+		<!-- IMemberDAO接口中方法的输入参数类型和映射文件的statement的parameterType指定的类型一致 -->
+		<!-- IMemberDAO接口中方法的返回值类型和映射文件的statement的resultType指定的类型一致 -->
 		INSERT INTO member(mid,name,age,salary,birthday,note)
 		VALUES (#{mid},#{name},#{age},#{salary},#{birthday},#{note}) ;
 	</insert>

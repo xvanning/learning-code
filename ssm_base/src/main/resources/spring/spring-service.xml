@@ -28,9 +28,9 @@
         <property name="dataSource" ref="dataSource" />
     </bean>
 
-<!--    &lt;!&ndash; 定义数据库的声明式事务控制，直接与业务方法对应 &ndash;&gt;
-    &lt;!&ndash; 定义事务的处理切入点 &ndash;&gt;
-    <aop:config expose-proxy="true">
+    <!-- 定义数据库的声明式事务控制，直接与业务方法对应 -->
+    <!-- 定义事务的处理切入点 -->
+    <!--<aop:config expose-proxy="true">
         <aop:pointcut expression="execution(* com..service..*.*(..))" id="pointcut"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut"/>
     </aop:config>-->

@@ -16,7 +16,7 @@
 
     <!-- 配置整合mybatis过程 -->
 
-    <!-- 1.配置数据库相关参数properties的属性：${url} -->
+    <!-- 1.配置数据库相关参数properties的属性：${url}等 -->
     <!-- 导入所有与数据库连接有关的信息项 -->
     <context:property-placeholder location="classpath:jdbc.properties" />
     <!-- 2.进行数据库连接池的配置 -->
@@ -36,7 +36,7 @@
         <property name="acquireRetryAttempts" value="${jdbc.acquireRetryAttempts}" /><!-- 当获取连接失败重试次数 -->
     </bean>
 
-    <!-- 3.配置SqlSessionFactory对象 -->
+    <!-- 3.配置SqlSessionFactory对象，产生SqlSession工厂类 -->
     <!-- 定义Spring与MyBatis整合的操作控制，此时数据库的连接对象取得由Spring负责 -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <!-- 配置所有资源文件的保存路径的资源匹配符 -->
@@ -50,7 +50,7 @@
         <property name="mapperLocations" value="classpath:mapping/*.xml" />
     </bean>
 
-    <!-- 4.配置扫描Dao接口包，动态实现Dao接口，注入到spring容器中 -->
+    <!-- 4.配置扫描Dao接口包，动态实现Dao接口，注入到spring容器中。由SqlSessionFactory产生SqlSession才能对数据库进行操作 -->
     <!-- 配置自动创建数据层实现类的开发包,定义该包中的访问为自动配置实现，就可以进行去数据层开发，不需要编写daoImpl实现类 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <!-- 注入sqlSessionFactory -->
